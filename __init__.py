@@ -41,6 +41,7 @@ classes = (operators.GoToMarker,
            operators.RemoveSelectedMarker,
            operators.SelectAll,
            ui.MarkerList,
+           data.Preferences,
            data.Properties,
            )
 
@@ -49,6 +50,10 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+
+    prefs = data.get_prefs(bpy.context)
+    if prefs.show_sidepanel:
+        ui.register_panels()
 
     ### MENU ###
     bpy.types.TIME_MT_marker.prepend(ui.marker_list_function)
@@ -64,6 +69,10 @@ def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+
+    prefs = data.get_prefs(bpy.context)
+    if prefs.show_sidepanel:
+        ui.unregister_panels()
 
     ### MENU ###
     bpy.types.TIME_MT_marker.remove(ui.marker_list_function)

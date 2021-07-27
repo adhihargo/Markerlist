@@ -23,6 +23,19 @@ class MarkerList(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class VIEW3D_PT_MarkerList(bpy.types.Panel):
+    """Creates a Panel in the Object properties window"""
+    bl_label = "Marker List"
+    bl_category = "Marker List"
+    bl_idname = "OBJECT_PT_MarkerList"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        layout = self.layout
+        draw_panel(layout, context)
+
+
 def draw_panel(layout, context):
     scn = context.scene
     tool_settings = scn.tool_settings
@@ -100,3 +113,20 @@ def draw_panel(layout, context):
 
 def marker_list_function(self, context):
     self.layout.operator('marker.list')
+
+
+panel_classes = (
+    VIEW3D_PT_MarkerList,
+)
+
+
+def register_panels():
+    from bpy.utils import register_class
+    for cls in panel_classes:
+        register_class(cls)
+
+
+def unregister_panels():
+    from bpy.utils import unregister_class
+    for cls in reversed(panel_classes):
+        unregister_class(cls)
