@@ -24,11 +24,24 @@ class MarkerList(bpy.types.Operator):
 
 
 class VIEW3D_PT_MarkerList(bpy.types.Panel):
-    """Creates a Panel in the Object properties window"""
+    """Creates a Panel in the 3D View area"""
     bl_label = "Marker List"
     bl_category = "Marker List"
-    bl_idname = "OBJECT_PT_MarkerList"
+    bl_idname = "VIEW3D_PT_MarkerList"
     bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        layout = self.layout
+        draw_panel(layout, context)
+
+
+class SEQUENCER_PT_MarkerList(bpy.types.Panel):
+    """Creates a Panel in the Video Sequencer area"""
+    bl_label = "Marker List"
+    bl_category = "Marker List"
+    bl_idname = "SEQUENCER_PT_MarkerList"
+    bl_space_type = 'SEQUENCE_EDITOR'
     bl_region_type = 'UI'
 
     def draw(self, context):
@@ -48,20 +61,14 @@ def draw_panel(layout, context):
     row.scale_x = 1
     row.prop(props, "sort_field", expand=True)
     row.prop(props, "sort_reversed", icon_only=True, icon="SORT_DESC")
-
-    col = layout.column(align=True)
-    if scn.tool_settings.lock_markers:
-        col.enabled = False
-    else:
-        col.enabled = True
-
-    sort_key = (lambda it: it[1].frame) if props.sort_field == "frame" else (lambda it: it[1].name)
-    row = col.row(align=True)
-    row.scale_x = 40
-    row.label(text=" ")
-    row.scale_x = 1
+    row.separator()
     o = row.operator("marker.select_all_global", icon="RESTRICT_SELECT_OFF", text="")
     o.action = "TOGGLE"
+
+    col = layout.column(align=True)
+    col.enabled = not scn.tool_settings.lock_markers
+
+    sort_key = (lambda it: it[1].frame) if props.sort_field == "frame" else (lambda it: it[1].name)
     for k, marker in sorted(marker_list.items(), key=sort_key, reverse=props.sort_reversed):
         row = col.row(align=True)
         # go to frame
@@ -94,21 +101,26 @@ def draw_panel(layout, context):
             icon = 'CAMERA_DATA'
         row.label(text="", icon=icon)
 
-    row = layout.row(align=True)
-    row.prop(scn, 'frame_current', text='Frame')
-    row.separator()
-    op = row.operator('screen.marker_jump', text='', icon='TRIA_LEFT')
+    first_column_scale = 0.3
+    grid = layout.grid_flow(columns=2, row_major=True)
+    grid.scale_x = first_column_scale
+    grid.operator("marker.add_global", text="Add")
+    grid.scale_x = 1
+    sub_row = grid.row(align=True)
+    sub_row.prop(scn, 'frame_current', text='Frame')
+    sub_row.separator()
+    op = sub_row.operator('screen.marker_jump', text='', icon='TRIA_LEFT')
     op.next = False
-    op = row.operator('screen.marker_jump', text='', icon='TRIA_RIGHT')
+    op = sub_row.operator('screen.marker_jump', text='', icon='TRIA_RIGHT')
     op.next = True
-    row.separator()
+    sub_row.separator()
     if tool_settings.lock_markers:
         icon = 'LOCKED'
     else:
         icon = 'UNLOCKED'
-    row.prop(tool_settings, 'lock_markers', text='', icon=icon)
-    row.separator()
-    row.operator('marker.remove_selected', text='Selected', icon='X')
+    sub_row.prop(tool_settings, 'lock_markers', text='', icon=icon)
+    sub_row.separator()
+    sub_row.operator('marker.remove_selected', text='Remove', icon='X')
 
 
 def marker_list_function(self, context):
@@ -117,6 +129,7 @@ def marker_list_function(self, context):
 
 panel_classes = (
     VIEW3D_PT_MarkerList,
+    SEQUENCER_PT_MarkerList,
 )
 
 

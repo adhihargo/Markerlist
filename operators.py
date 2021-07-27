@@ -18,6 +18,23 @@ class GoToMarker(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class AddMarker(bpy.types.Operator):
+    """Add Timeline Marker at current frame"""
+    bl_idname = "marker.add_global"
+    bl_label = "Add Marker"
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        scn = context.scene
+        current_frame = scn.frame_current
+        scn.timeline_markers.new(name="F_{}".format(current_frame), frame=current_frame)
+        return {'FINISHED'}
+
+
 class RemoveMarker(bpy.types.Operator):
     """Remove specific Timeline Marker"""
     bl_idname = "marker.remove"

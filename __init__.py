@@ -37,6 +37,7 @@ from . import data, operators, ui
 # register
 ##################################
 classes = (operators.GoToMarker,
+           operators.AddMarker,
            operators.RemoveMarker,
            operators.RemoveSelectedMarker,
            operators.SelectAll,
