@@ -39,6 +39,7 @@ from . import data, operators, ui
 classes = (operators.GoToMarker,
            operators.RemoveMarker,
            operators.RemoveSelectedMarker,
+           operators.SelectAll,
            ui.MarkerList,
            data.Properties,
            )

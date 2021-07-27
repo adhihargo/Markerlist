@@ -57,3 +57,24 @@ class RemoveSelectedMarker(bpy.types.Operator):
             if marker.select:
                 scn.timeline_markers.remove(marker)
         return {'FINISHED'}
+
+
+class SelectAll(bpy.types.Operator):
+    """Change selection of time markers, active on all areas"""
+    bl_idname = "marker.select_all_global"
+    bl_label = "(De)select all Markers"
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    action: bpy.props.EnumProperty(items=[("TOGGLE", "Toggle", "", 0), ])
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene.timeline_markers
+
+    def execute(self, context):
+        scn = context.scene
+        if self.action == "TOGGLE":
+            value = not scn.timeline_markers[0].select
+            for marker in scn.timeline_markers:
+                marker.select = value
+        return {'FINISHED'}

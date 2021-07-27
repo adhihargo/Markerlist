@@ -43,6 +43,12 @@ def draw_panel(layout, context):
         col.enabled = True
 
     sort_key = (lambda it: it[1].frame) if props.sort_field == "frame" else (lambda it: it[1].name)
+    row = col.row(align=True)
+    row.scale_x = 40
+    row.label(text=" ")
+    row.scale_x = 1
+    o = row.operator("marker.select_all_global", icon="RESTRICT_SELECT_OFF", text="")
+    o.action = "TOGGLE"
     for k, marker in sorted(marker_list.items(), key=sort_key, reverse=props.sort_reversed):
         row = col.row(align=True)
         # go to frame
