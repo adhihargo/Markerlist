@@ -19,7 +19,7 @@ Created by Samy Tichadou (tonton)
 '''
 bl_info = {
     "name": "Marker List",
-    "author": "Samy Tichadou (tonton)",
+    "author": "Samy Tichadou (tonton), Adhi Hargo",
     "version": (1, 0),
     "blender": (2, 82, 0),
     "location": "Timeline",
