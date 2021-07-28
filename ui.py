@@ -49,6 +49,45 @@ class SEQUENCER_PT_MarkerList(bpy.types.Panel):
         draw_panel(layout, context)
 
 
+class DOPESHEET_PT_MarkerList(bpy.types.Panel):
+    """Creates a Panel in the Dopesheet area"""
+    bl_label = "Marker List"
+    bl_category = "Marker List"
+    bl_idname = "DOPESHEET_PT_MarkerList"
+    bl_space_type = 'DOPESHEET_EDITOR'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        layout = self.layout
+        draw_panel(layout, context)
+
+
+class GRAPH_PT_MarkerList(bpy.types.Panel):
+    """Creates a Panel in the Graph Editor area"""
+    bl_label = "Marker List"
+    bl_category = "Marker List"
+    bl_idname = "GRAPH_PT_MarkerList"
+    bl_space_type = 'GRAPH_EDITOR'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        layout = self.layout
+        draw_panel(layout, context)
+
+
+class NLA_PT_MarkerList(bpy.types.Panel):
+    """Creates a Panel in the NLA Editor area"""
+    bl_label = "Marker List"
+    bl_category = "Marker List"
+    bl_idname = "NLA_PT_MarkerList"
+    bl_space_type = 'NLA_EDITOR'
+    bl_region_type = 'UI'
+
+    def draw(self, context):
+        layout = self.layout
+        draw_panel(layout, context)
+
+
 def draw_panel(layout, context):
     scn = context.scene
     tool_settings = scn.tool_settings
@@ -140,6 +179,9 @@ def marker_list_function(self, context):
 panel_classes = (
     VIEW3D_PT_MarkerList,
     SEQUENCER_PT_MarkerList,
+    DOPESHEET_PT_MarkerList,
+    GRAPH_PT_MarkerList,
+    NLA_PT_MarkerList,
 )
 
 
