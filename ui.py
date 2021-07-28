@@ -122,6 +122,16 @@ def draw_panel(layout, context):
     sub_row.separator()
     sub_row.operator('marker.remove_selected', text='Remove', icon='X')
 
+    grid.scale_x = first_column_scale
+    grid.operator("marker.rename_selected", text="Rename")
+    grid.scale_x = 1
+    grid.prop(props, "name_pattern", text="")
+
+    grid.scale_x = first_column_scale
+    grid.label(text="")
+    grid.scale_x = 1
+    grid.prop(props, "name_sample", text="")
+
 
 def marker_list_function(self, context):
     self.layout.operator('marker.list')

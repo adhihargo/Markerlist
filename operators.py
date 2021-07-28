@@ -1,5 +1,7 @@
 import bpy
 
+from . import data
+
 
 class GoToMarker(bpy.types.Operator):
     """Go to specific Timeline Marker frame"""
@@ -73,6 +75,35 @@ class RemoveSelectedMarker(bpy.types.Operator):
         for marker in scn.timeline_markers:
             if marker.select:
                 scn.timeline_markers.remove(marker)
+        return {'FINISHED'}
+
+
+class RenameSelectedMarker(bpy.types.Operator):
+    """Rename selected Timeline Markers"""
+    bl_idname = "marker.rename_selected"
+    bl_label = "Rename Selected Marker"
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        props: data.Properties = context.scene.markerlist_props
+        return props.name_pattern_ok
+
+    def execute(self, context):
+        scn = context.scene
+        marker_list = scn.timeline_markers
+        props: data.Properties = context.scene.markerlist_props
+
+        index = props.name_indexstart
+        sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
+        for marker in sorted(marker_list.values(), key=sort_key, reverse=props.sort_reversed):
+            if not marker.select:
+                continue
+
+            new_name = props.name_formatstr.format(**{"num": index, "frm": marker.frame})
+            marker.name = new_name
+            index += 1
+
         return {'FINISHED'}
 
 
