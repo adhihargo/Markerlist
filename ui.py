@@ -66,10 +66,10 @@ def draw_panel(layout, context):
     o.action = "TOGGLE"
 
     col = layout.column(align=True)
-    col.enabled = not scn.tool_settings.lock_markers
+    col.enabled = not tool_settings.lock_markers
 
-    sort_key = (lambda it: it[1].frame) if props.sort_field == "frame" else (lambda it: it[1].name)
-    for k, marker in sorted(marker_list.items(), key=sort_key, reverse=props.sort_reversed):
+    sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
+    for marker in sorted(marker_list.values(), key=sort_key, reverse=props.sort_reversed):
         row = col.row(align=True)
         # go to frame
         if scn.frame_current == marker.frame:

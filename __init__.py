@@ -46,6 +46,7 @@ classes = (operators.GoToMarker,
            data.Properties,
            )
 
+
 def register():
     ### OPERATORS ###
     from bpy.utils import register_class
@@ -53,7 +54,7 @@ def register():
         register_class(cls)
 
     prefs = data.get_prefs(bpy.context)
-    if prefs.show_sidepanel:
+    if prefs and prefs.show_sidepanel:
         ui.register_panels()
 
     ### MENU ###
@@ -72,7 +73,7 @@ def unregister():
         unregister_class(cls)
 
     prefs = data.get_prefs(bpy.context)
-    if prefs.show_sidepanel:
+    if prefs and prefs.show_sidepanel:
         ui.unregister_panels()
 
     ### MENU ###
