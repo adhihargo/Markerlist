@@ -108,16 +108,22 @@ class RenameSelectedMarker(bpy.types.Operator):
 
 
 class SelectAll(bpy.types.Operator):
-    """Change selection of time markers, active on all areas"""
+    """Change selection of all time markers. Inverts selection instead, if CTRL key is pressed."""
     bl_idname = "marker.select_all_global"
     bl_label = "(De)select all Markers"
     bl_options = {'INTERNAL', 'UNDO'}
 
-    action: bpy.props.EnumProperty(items=[("TOGGLE", "Toggle", "", 0), ])
+    action: bpy.props.EnumProperty(items=[("TOGGLE", "Toggle", "", 0),
+                                          ("INVERT", "Invert", "", 1)])
 
     @classmethod
     def poll(cls, context):
         return context.scene.timeline_markers
+
+    def invoke(self, context, event):
+        if event.ctrl:
+            self.action = "INVERT"
+        return self.execute(context)
 
     def execute(self, context):
         scn = context.scene
@@ -125,4 +131,7 @@ class SelectAll(bpy.types.Operator):
             value = not scn.timeline_markers[0].select
             for marker in scn.timeline_markers:
                 marker.select = value
+        elif self.action == "INVERT":
+            for marker in scn.timeline_markers:
+                marker.select = not marker.select
         return {'FINISHED'}
