@@ -22,7 +22,7 @@ class GoToMarker(bpy.types.Operator):
 
 class AddMarker(bpy.types.Operator):
     """Add Timeline Marker at current frame"""
-    bl_idname = "marker.add_global"
+    bl_idname = "marker.ml_add"
     bl_label = "Add Marker"
     bl_options = {'INTERNAL', 'UNDO'}
 
@@ -109,7 +109,7 @@ class RenameSelectedMarker(bpy.types.Operator):
 
 class SelectAll(bpy.types.Operator):
     """Change selection of all time markers. Inverts selection instead, if CTRL key is pressed."""
-    bl_idname = "marker.select_all_global"
+    bl_idname = "marker.ml_select_all"
     bl_label = "(De)select all Markers"
     bl_options = {'INTERNAL', 'UNDO'}
 
@@ -134,4 +134,28 @@ class SelectAll(bpy.types.Operator):
         elif self.action == "INVERT":
             for marker in scn.timeline_markers:
                 marker.select = not marker.select
+        return {'FINISHED'}
+
+
+class CameraBind(bpy.types.Operator):
+    """"""
+    bl_idname = "marker.ml_camera_bind"
+    bl_label = "Bind Camera to Markers"
+    bl_options = {'INTERNAL', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.type == "CAMERA"
+
+    def execute(self, context):
+        camera = context.object
+        scn = context.scene
+        frame_current = scn.frame_current
+        marker_list = [m for m in scn.timeline_markers if m.frame == frame_current]
+        if not marker_list:
+            m = scn.timeline_markers.new(name="F_{}".format(frame_current), frame=frame_current)
+            marker_list = [m]
+
+        for marker in marker_list:
+            marker.camera = camera
         return {'FINISHED'}

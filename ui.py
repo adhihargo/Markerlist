@@ -101,7 +101,7 @@ def draw_panel(layout, context):
     row.prop(props, "sort_field", expand=True)
     row.prop(props, "sort_reversed", icon_only=True, icon="SORT_DESC")
     row.separator()
-    o = row.operator("marker.select_all_global", icon="RESTRICT_SELECT_OFF", text="")
+    o = row.operator("marker.ml_select_all", icon="RESTRICT_SELECT_OFF", text="")
     o.action = "TOGGLE"
 
     col = layout.column(align=True)
@@ -143,7 +143,7 @@ def draw_panel(layout, context):
     first_column_scale = 0.3
     grid = layout.grid_flow(columns=2, row_major=True)
     grid.scale_x = first_column_scale
-    grid.operator("marker.add_global", text="Add")
+    grid.operator("marker.ml_add", text="Add")
     grid.scale_x = 1
     sub_row = grid.row(align=True)
     sub_row.prop(scn, 'frame_current', text='Frame')
@@ -164,12 +164,14 @@ def draw_panel(layout, context):
     grid.scale_x = first_column_scale
     grid.operator("marker.rename_selected", text="Rename")
     grid.scale_x = 1
-    grid.prop(props, "name_pattern", text="")
+    sub_row = grid.row(align=True)
+    sub_row.prop(props, "name_pattern", text="")
+    sub_row.prop(props, "name_sample", text="")
 
     grid.scale_x = first_column_scale
     grid.label(text="")
     grid.scale_x = 1
-    grid.prop(props, "name_sample", text="")
+    grid.operator("marker.ml_camera_bind")
 
 
 def marker_list_function(self, context):
