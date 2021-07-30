@@ -105,7 +105,6 @@ def draw_panel(layout, context):
     o.action = "TOGGLE"
 
     col = layout.column(align=True)
-    col.enabled = not tool_settings.lock_markers
 
     sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
     for marker in sorted(marker_list.values(), key=sort_key, reverse=props.sort_reversed):
@@ -117,28 +116,31 @@ def draw_panel(layout, context):
             icon = 'RADIOBUT_OFF'
         op = row.operator('marker.go_to', text='', icon=icon, emboss=False)
         op.frame = marker.frame
+
+        sub_row = row.row(align=True)
+        sub_row.enabled = not tool_settings.lock_markers
         # name
-        row.scale_x = 4
-        row.prop(marker, "name", text="")
-        row.scale_x = 1
+        sub_row.scale_x = 4
+        sub_row.prop(marker, "name", text="")
+        sub_row.scale_x = 1
         # selection
         if marker.select:
             icon = 'RESTRICT_SELECT_OFF'
         else:
             icon = 'RESTRICT_SELECT_ON'
-        row.prop(marker, "select", text="", icon=icon)
+        sub_row.prop(marker, "select", text="", icon=icon)
         # frame
-        row.prop(marker, "frame", text="")
+        sub_row.prop(marker, "frame", text="")
 
         # delete
-        op = row.operator('marker.remove', text='', icon='X')
+        op = sub_row.operator('marker.remove', text='', icon='X')
         op.frame = marker.frame
         # camera
         if marker.camera:
             icon = 'VIEW_CAMERA'
         else:
             icon = 'CAMERA_DATA'
-        row.label(text="", icon=icon)
+        sub_row.label(text="", icon=icon)
 
     first_column_scale = 0.3
     grid = layout.grid_flow(columns=2, row_major=True)
