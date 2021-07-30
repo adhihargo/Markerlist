@@ -45,6 +45,9 @@ class Properties(bpy.types.PropertyGroup):
                                        name="Sort Field", default="frame", options={"SKIP_SAVE"})
 
     sort_reversed: bpy.props.BoolProperty(name="Sort Reversed", default=False, options={"SKIP_SAVE"})
+    name_filter: bpy.props.StringProperty(name="Name Filter", default="",
+                                          description="String to filter markers displayed by name.",
+                                          options={"SKIP_SAVE", "TEXTEDIT_UPDATE"})
     name_pattern: bpy.props.StringProperty(name="Name Pattern", default="",
                                            options={"SKIP_SAVE", "TEXTEDIT_UPDATE"}, update=upd_name_pattern)
     name_sample: bpy.props.StringProperty(name="Name Sample", default="", options={"SKIP_SAVE"},

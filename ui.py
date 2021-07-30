@@ -95,9 +95,11 @@ def draw_panel(layout, context):
     props: data.Properties = scn.markerlist_props
 
     row = layout.row(align=True)
-    row.scale_x = 2
-    row.label(text="Sort Field:")
+    row.scale_x = 1.5
+    row.prop(props, "name_filter", text="")
     row.scale_x = 1
+    row.separator()
+    row.label(text="Sort:")
     row.prop(props, "sort_field", expand=True)
     row.prop(props, "sort_reversed", icon_only=True, icon="SORT_DESC")
     row.separator()
@@ -106,8 +108,13 @@ def draw_panel(layout, context):
 
     col = layout.column(align=True)
 
+    name_filter = props.name_filter
     sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
     for marker in sorted(marker_list.values(), key=sort_key, reverse=props.sort_reversed):
+        if name_filter:
+            if marker.name.find(name_filter) == -1:
+                continue
+
         row = col.row(align=True)
         # go to frame
         if scn.frame_current == marker.frame:
