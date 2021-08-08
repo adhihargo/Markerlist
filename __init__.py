@@ -49,6 +49,12 @@ classes = (operators.GoToMarker,
            )
 
 
+def frame_seconds_get(self: bpy.types.TimelineMarker):
+    fps = bpy.context.scene.render.fps
+    t_second, t_frame = divmod(self.frame, fps)
+    return str(t_second) + "+{:02}".format(t_frame)
+
+
 def register():
     ### OPERATORS ###
     from bpy.utils import register_class
@@ -66,6 +72,7 @@ def register():
     bpy.types.GRAPH_MT_marker.prepend(ui.marker_list_function)
     bpy.types.NLA_MT_marker.prepend(ui.marker_list_function)
     bpy.types.Scene.markerlist_props = bpy.props.PointerProperty(type=data.Properties)
+    bpy.types.TimelineMarker.frame_seconds = bpy.props.StringProperty(name="Frame Time", get=frame_seconds_get)
 
 
 def unregister():
@@ -85,3 +92,4 @@ def unregister():
     bpy.types.GRAPH_MT_marker.remove(ui.marker_list_function)
     bpy.types.NLA_MT_marker.remove(ui.marker_list_function)
     del bpy.types.Scene.markerlist_props
+    del bpy.types.TimelineMarker.frame_seconds

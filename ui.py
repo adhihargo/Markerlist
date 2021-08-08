@@ -142,6 +142,7 @@ def draw_panel(layout, context):
         # delete
         op = sub_row.operator('marker.remove', text='', icon='X')
         op.frame = marker.frame
+        sub_row.prop(marker, "frame_seconds", text="")
         # camera
         if marker.camera:
             icon = 'VIEW_CAMERA'
