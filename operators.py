@@ -145,7 +145,8 @@ class CameraBind(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.object.type == "CAMERA"
+        obj = context.object
+        return obj and obj.type == "CAMERA"
 
     def execute(self, context):
         camera = context.object
