@@ -92,25 +92,32 @@ def draw_panel(layout, context):
     scn = context.scene
     tool_settings = scn.tool_settings
     marker_list = scn.timeline_markers
-    props: data.Properties = scn.markerlist_props
+    props: data.Properties = scn.get("markerlist_props")
 
-    row = layout.row(align=True)
-    row.scale_x = 1.5
-    row.prop(props, "name_filter", text="")
-    row.scale_x = 1
-    row.separator()
-    row.label(text="Sort:")
-    row.prop(props, "sort_field", expand=True)
-    row.prop(props, "sort_reversed", icon_only=True, icon="SORT_DESC")
-    row.separator()
-    o = row.operator("marker.ml_select_all", icon="RESTRICT_SELECT_OFF", text="")
-    o.action = "TOGGLE"
+    if props:
+        row = layout.row(align=True)
+        row.scale_x = 1.5
+        row.prop(props, "name_filter", text="")
+        row.scale_x = 1
+        row.separator()
+        row.label(text="Sort:")
+        row.prop(props, "sort_field", expand=True)
+        row.prop(props, "sort_reversed", icon_only=True, icon="SORT_DESC")
+        row.separator()
+        o = row.operator("marker.ml_select_all", icon="RESTRICT_SELECT_OFF", text="")
+        o.action = "TOGGLE"
 
     col = layout.column(align=True)
 
-    name_filter = props.name_filter
-    sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
-    for marker in sorted(marker_list.values(), key=sort_key, reverse=props.sort_reversed):
+    if props:
+        name_filter = props.name_filter
+        sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
+        sort_reversed = props.sort_reversed
+    else:
+        name_filter = None
+        sort_key = None
+        sort_reversed = False
+    for marker in sorted(marker_list.values(), key=sort_key, reverse=sort_reversed):
         if name_filter:
             if marker.name.find(name_filter) == -1:
                 continue
@@ -171,12 +178,13 @@ def draw_panel(layout, context):
     sub_row.separator()
     sub_row.operator('marker.remove_selected', text='Remove', icon='X')
 
-    grid.scale_x = first_column_scale
-    grid.operator("marker.rename_selected", text="Rename")
-    grid.scale_x = 1
-    sub_row = grid.row(align=True)
-    sub_row.prop(props, "name_pattern", text="")
-    sub_row.prop(props, "name_sample", text="")
+    if props:
+        grid.scale_x = first_column_scale
+        grid.operator("marker.rename_selected", text="Rename")
+        grid.scale_x = 1
+        sub_row = grid.row(align=True)
+        sub_row.prop(props, "name_pattern", text="")
+        sub_row.prop(props, "name_sample", text="")
 
     grid.scale_x = first_column_scale
     grid.label(text="")
