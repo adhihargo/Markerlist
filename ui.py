@@ -89,15 +89,15 @@ class NLA_PT_MarkerList(bpy.types.Panel):
 
 
 def draw_panel(layout, context):
-    scn = context.scene
-    tool_settings = scn.tool_settings
-    marker_list = scn.timeline_markers
-    props: data.Properties = scn.get("markerlist_props")
+    scene = context.scene
+    tool_settings = scene.tool_settings
+    marker_list = scene.timeline_markers
+    props: data.Properties = getattr(scene, "markerlist_props")
 
     if props:
         row = layout.row(align=True)
         row.scale_x = 1.5
-        row.prop(props, "name_filter", text="")
+        row.prop(props, "name_filter", icon="VIEWZOOM", text="")
         row.scale_x = 1
         row.separator()
         row.label(text="Sort:")
@@ -111,12 +111,11 @@ def draw_panel(layout, context):
 
     if props:
         name_filter = props.name_filter
-        sort_key = (lambda it: it.frame) if props.sort_field == "frame" else (lambda it: it.name)
         sort_reversed = props.sort_reversed
     else:
         name_filter = None
-        sort_key = None
         sort_reversed = False
+    sort_key = (lambda it: it.frame) if props and props.sort_field == "frame" else (lambda it: it.name)
     for marker in sorted(marker_list.values(), key=sort_key, reverse=sort_reversed):
         if name_filter:
             if marker.name.find(name_filter) == -1:
@@ -124,7 +123,7 @@ def draw_panel(layout, context):
 
         row = col.row(align=True)
         # go to frame
-        if scn.frame_current == marker.frame:
+        if scene.frame_current == marker.frame:
             icon = 'RADIOBUT_ON'
         else:
             icon = 'RADIOBUT_OFF'
@@ -163,7 +162,7 @@ def draw_panel(layout, context):
     grid.operator("marker.ml_add", text="Add")
     grid.scale_x = 1
     sub_row = grid.row(align=True)
-    sub_row.prop(scn, 'frame_current', text='Frame')
+    sub_row.prop(scene, 'frame_current', text='Frame')
     sub_row.separator()
     op = sub_row.operator('screen.marker_jump', text='', icon='TRIA_LEFT')
     op.next = False
