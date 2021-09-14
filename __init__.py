@@ -61,10 +61,6 @@ def register():
     for cls in classes:
         register_class(cls)
 
-    prefs = data.get_prefs(bpy.context)
-    if prefs and prefs.show_sidepanel:
-        ui.register_panels()
-
     ### MENU ###
     bpy.types.TIME_MT_marker.prepend(ui.marker_list_function)
     bpy.types.SEQUENCER_MT_marker.prepend(ui.marker_list_function)
@@ -74,16 +70,16 @@ def register():
     bpy.types.Scene.markerlist_props = bpy.props.PointerProperty(type=data.Properties)
     bpy.types.TimelineMarker.frame_seconds = bpy.props.StringProperty(name="Frame Time", get=frame_seconds_get)
 
+    prefs = data.get_prefs(bpy.context)
+    if prefs and prefs.show_sidepanel:
+        ui.register_panels()
+
 
 def unregister():
     ### OPERATORS ###
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
-
-    prefs = data.get_prefs(bpy.context)
-    if prefs and prefs.show_sidepanel:
-        ui.unregister_panels()
 
     ### MENU ###
     bpy.types.TIME_MT_marker.remove(ui.marker_list_function)
@@ -93,3 +89,7 @@ def unregister():
     bpy.types.NLA_MT_marker.remove(ui.marker_list_function)
     del bpy.types.Scene.markerlist_props
     del bpy.types.TimelineMarker.frame_seconds
+
+    prefs = data.get_prefs(bpy.context)
+    if prefs and prefs.show_sidepanel:
+        ui.unregister_panels()
